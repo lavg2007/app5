@@ -9,3 +9,8 @@ wa = wn*sin(theta);
 % poles desires
 s(1) = -z*wn + wa*i;
 s(2) = -z*wn - wa*i;
+
+%% B
+
+z_B = sqrt(tand(des_PM_B)*sind(des_PM_B))/2
+wg_B = des_BW_B*sqrt(sqrt(1+4*z_B^4)-2*z_B^2)/sqrt((1-2*z_B^2)+sqrt(4*z_B^4-4*z_B^2+2))
