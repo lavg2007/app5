@@ -41,7 +41,7 @@ acc_ts2_pu_EL_A = 3;
 %% Specification du telescope B
 % critere de design
 des_BW_B = 10;
-des_PM_B = 60; % +- 5 deg
+des_PM_B = 50; % +- 5 deg
 des_erp_B = 0.005;
 sec_Atten_Vib_B = -12;   % db
 % sec_14db_B = TDB 
