@@ -1,0 +1,172 @@
+% ======================================================================
+
+
+% Sujet du document
+% Informations importantes
+%
+%
+% Prénom Nom
+% H. Dube 2019
+% ======================================================================
+% Ce code rassemble les efforts d'étudiants de la faculté de génie  
+% de l'université de Sherbrooke afin de faire un template LaTeX moderne
+% dédié à l'écriture de rapport universitaire.
+% Ce document est libre d'être utilisé et modifié.
+% ======================================================================
+
+% ----------------------------------------------------
+% Initialisation
+% ----------------------------------------------------
+\documentclass{udes_rapport} % Voir udes_rapport.cls
+
+\begin{document}
+\selectlanguage{french}
+
+% ----------------------------------------------------
+% Configurer la page titre
+% ----------------------------------------------------
+
+% Information
+\faculte{Génie}
+\departement{génie électrique et génie informatique}
+\app{5}{Conception d’asservissements analogiques}
+\professeur{Jean-Baptiste Michaud}
+\etudiants{Hubert Dubé - dubh3401 \\ Gabriel Lavoie - lavg2007}
+\dateRemise{15 novembre 2019}
+
+
+% ======================================================================
+\pagenumbering{roman} % met les numéros de pages en romain
+% ----------------------------------------------------
+% Page titre
+% ----------------------------------------------------
+\fairePageTitre{LOGO} % Options: [STD, LOGO]
+\newpage
+
+% ----------------------------------------------------
+% Table des matières
+% ----------------------------------------------------
+\tableofcontents
+\newpage
+
+
+% ----------------------------------------------------
+% Table des figures
+% ----------------------------------------------------
+\listoffigures
+\newpage
+
+
+
+% ======================================================================
+% Document
+% ======================================================================
+\pagenumbering{arabic} % met des chiffres arabes
+\setcounter{page}{1} % reset les numéros de pages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{Analyse du signal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\section{Procédure de conception systématique}
+%----------------------------------------------------------------------------------------------------------------------%
+\section{Design du télescope A}
+\subsection{Azimut}
+\subsubsection{Design initial}
+Le début de la conception est de déterminer la position des pôles désirés. Ceux-ci représentes les emplacement par lesquels le lieu des racines devra passer afin de satisfaire les demandes de design du client. Cette partie est faite dans le document \textit{trad\_specs.m} . Les caractéristiques d'équations de système d'ordre 2 standards y sont déterminé, soit $\zeta$ et $\omega _{n}$. À partir du critère de dépassement maximal, $\zeta$ est calculé à $0.4037$. Il y a par contre plusieurs valeurs de $\omega _{n}$ possibles, ce qui demande de vérifier lequel sera le plus approprié au contexte présent. Dans notre cas, le $\omega _{n}$ de $11.1484$ est lui à choisir, car il est le plus grand, ce qui permettera l'atteinte de tous les autres critères de design (prendre le $\omega _{n}$ le plus grand assure de respecter tous les temps de monté). Ainsi, les pôles désirés sont:
+\[s^* = -4.5008\pm 10.1995i\]
+Ensuite , il est possible de déterminer le types de compensation désiré. En affichant la réponse à un échellon \textcolor{red}{ou direct avec delta phi??}, il est clair que la réponse transitoire du système doit être amélioré. Pour ce faire, un compensateur par avance de phase doit être utilisé afin de réduire la réponse en haute fréquence qui correspond à la section transitoire. La technique de la bissectrice sera utilisée de la manière suivante:
+Avancer la phase implique de stabiliser le système et donc de le tirer vers la droite sur le lieu des racines. Le calcul de $\Delta \phi$ permet de déterminer quel changement doit être appliqué à la phase pour la réduire à celle d'un système à phase minimale.
+\[\Delta \phi = -180 - \langle G(s)\vert_{s = s^*} \rangle\]
+\[\Delta \phi = 73.0918^\circ \]
+Comme la phase à compenser est positive, il est évident qu'une compensation par avance de phase est à faire. Les valeurs du zéro et du pôle est ensuite déterminé à partir de ce changement à appliquer. Le gain à compenser est calculé en fonction du positionnement du zéro et du pôle sur l'axe réel et du gain de la fonction à compenser.
+\[AvPh = k_a\frac{s-z}{s-p}\]
+\[k_a = \frac{1}{AvPh \vert_{s = s^*} \cdot \vert G(s^*)  \vert } \]
+\[AvPh_1 = 11.5353 \cdot \frac{s+3.8857}{s-31.9861}\]
+
+L'ajout de ce compensateur améliore le régime transitoire, mais ne permet pas de répondre aux spécifications de sécurité. Un autre compensateur d'avancement de phase est donc nécessaire pour respecter le marge de retard acceptable. Un approche par la méthode de bode doit être utilisé, car les spécifications sont dans le domaine fréquentiel. La marge de phase désiré est calculée à la fréquence de traverse en gain afin de déterminer par combien la phase du système doit être augmentée. Le gain permetant la traverse en fréquence doit rester le même \textcolor{red}{parce que........}, le $K^*$ est donc de 1.
+La marge de phase nécessaire est 
+\[ TM = \frac{PM^*}{\omega_n}\cdot\frac{\pi}{180}\]
+\[PM^* = 52.8378^\circ\]
+On obtient donc la phase à compenser
+\[\Delta \phi = PM^* - PM \]
+\[\Delta \phi = 20.6660^\circ\]
+Où $PM$ est la marge de phase du système à corriger (système corrigé seulement par le premier AvPh). En utilisant les formules de la page 28 du chapitre 7 des notes de Jean de LaFontaine, le compensateur suivant est obtenu
+\[AvPh = k_a\frac{s-z}{s-p}\]
+\[k_a = \frac{K^*}{\vert \frac{s-z}{s-p} \vert}\]
+\[ AvPh_2 = \]
+Où $k_a$ est le gain à appliquer au filtre pour enlever l'impacte qu'il aurait sur la fréquenec
+
+\subsubsection{Iterations}
+\subsubsection{Graphiques}
+\subsubsection{Conformité}
+\subsubsection{Validation de la trajectoire de référence}
+\subsection{Élévation}
+\subsubsection{Design initial}
+\subsubsection{Iterations}
+\subsubsection{Graphiques}
+\subsubsection{Conformité}
+\subsubsection{Validation de la trajectoire de référence}
+%----------------------------------------------------------------------------------------------------------------------%
+\section{Design du télescope B}
+\subsection{Azimut}
+\subsubsection{Design initial}
+\subsubsection{Iterations}
+\subsubsection{Graphiques}
+\subsubsection{Conformité}
+\subsubsection{Validation de la trajectoire de référence}
+\subsection{Élévation}
+\subsubsection{Design initial}
+\subsubsection{Iterations}
+\subsubsection{Graphiques}
+\subsubsection{Conformité}
+\subsubsection{Validation de la trajectoire de référence}
+%----------------------------------------------------------------------------------------------------------------------%
+\section{Conclusion}
+
+
+
+
+
+
+\begin{comment}
+\begin{center}
+	\centering
+	\includegraphics[width=0.7\textwidth]{puissance}
+	\captionof{figure}{Spectre de puissance d'une onde de 1kHz}
+	\label{puissance}
+\end{center}
+
+
+\section{Filtres FIR}
+\noindent\begin{minipage}{\textwidth} 
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=.75\linewidth]{ampFIR}
+  \captionof{subfigure}{Amplitude}
+  \label{FIR:ampFIR}
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+  \centering 
+  \includegraphics[width=.75\linewidth]{phaseCute} 
+  \captionof{subfigure}{Phase} 
+  \label{FIR:phaseFIR} 
+\end{minipage} 
+\captionof{figure}{Filtre IIR} 
+\label{FIR} 
+\end{minipage}
+\end{comment}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
