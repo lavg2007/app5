@@ -181,7 +181,7 @@ z = -0.68;
 p = -1/(K_RePh_B*T_AZ_Re_B);
 
 Kr_AZ_B = 1/abs((j*wg_B - z)/(j*wg_B-p));
-Kr_AZ_B = 0.95;
+% Kr_AZ_B = 0.95;
 
 G_RePh_B = Kr_AZ_B*(s-z)/(s-p);
 FTBO_AZ_B2 = series(G_RePh_B, FTBO_AZ_B1);
