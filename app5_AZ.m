@@ -126,7 +126,7 @@ eru3_AZ_A = 1/Kvel3
 
 stepinfo(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1))
 FTBF_AZ = feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1)
-ramp = [0:0.01:20];
+ramp = [0:0.1:20];
 figure
 hold on 
 lsim(FTBF_AZ,ramp,ramp)
@@ -138,7 +138,13 @@ y_ramp_diff = y_ramp-ramp';
 figure()
 plot(ramp',y_ramp_diff)
 %% verification de la trajectoire
-% lsim(FTBF_AZ,utrk,ttrk)
+% figure()
+% lsim(FTBF_EL_PI,utrk,ttrk)
+% rep_traj_A = lsim(FTBF_AZ,utrk,ttrk);
+
+% calcul de la correlation
+% R_2 = sum((utrk - mean(rep_traj_A)).^2) / sum((rep_traj_A - mean(rep_traj_A)).^2)
+
 
 
 %% Telescope B
@@ -149,7 +155,7 @@ plot(ramp',y_ramp_diff)
 K_AvPh_B = 1/abs(evalfr(FTBO_AZ, j*wg_B))
 
 
-[Gm_AZ Pm_AZ wgm wpm] = margin(K_AvPh_B*FTBO_AZ);
+[Gm_AZ Pm_AZ wgm wpm] = margin(K_AvPh_B*FTBO_AZ)
 
 phi_AvPh_AZ_B = des_PM_B - Pm_AZ;
 alpha_AZ_B = ( 1-sind(phi_AvPh_AZ_B) )/( 1+sind(phi_AvPh_AZ_B) );
@@ -165,7 +171,8 @@ G_AvPh_B = Ka_AvPh_B*(s-z)/(s-p);
 FTBO_AZ_B1 = series(G_AvPh_B, FTBO_AZ);
 [num den] = tfdata(FTBO_AZ_B1, 'v');
 Kvel = num(end)/den(end-1);
-erp_ramp_AZ_B = 1/Kvel;
+erp_ramp_AZ_B = 1/Kvel
+
 % figure
 % margin(FTBO_AZ_B1)
 
@@ -174,20 +181,21 @@ K_RePh_B = (1/des_erp_B)/Kvel;
 % figure
 % margin(K_RePh_B*FTBO_AZ_B1)
 
-T_AZ_Re_B = 10/wg_B;
+T_AZ_Re_B = 10/wg_B
 
-z = -1/T_AZ_Re_B;
-z = -0.68;
-p = -1/(K_RePh_B*T_AZ_Re_B);
+z = -1/T_AZ_Re_B
+z = -0.68
+p = -1/(K_RePh_B*T_AZ_Re_B)
 
 Kr_AZ_B = 1/abs((j*wg_B - z)/(j*wg_B-p));
 % Kr_AZ_B = 0.95;
 
-G_RePh_B = Kr_AZ_B*(s-z)/(s-p);
-FTBO_AZ_B2 = series(G_RePh_B, FTBO_AZ_B1);
+
+G_RePh_B = Kr_AZ_B*(s-z)/(s-p)
+FTBO_AZ_B2 = series(G_RePh_B, FTBO_AZ_B1)
 
 [num den] = tfdata(FTBO_AZ_B2, 'v');
-Kvel = evalfr(minreal(s*FTBO_AZ_B2),0)
+Kvel = num(end)/den(end-1);
 erp_ramp_AZ_B = 1/Kvel
 
 figure
@@ -196,17 +204,16 @@ margin(FTBO_AZ_B2)
 
 
 
+figure
+step(feedback(FTBO_AZ_B2,1), [0:0.001:5])
 
-w_c = 54.8 ;%pic
-w_width = 10;
+w_c = 54.8 %pic
+w_width = 10
 num_band_stop = [1 0 w_c^2];
 den_band_stop = [1 w_width w_c^2];
-band_stop = tf(num_band_stop, den_band_stop);
-[num_cheb den_cheb] = cheby1(2,0,[w_c-w_width/2 w_c+w_width/2], 'stop', 's')
-band_stop = tf(num_cheb, den_cheb)
+band_stop = tf(num_band_stop, den_band_stop)
 
-
-FTBO_AZ_B3 = series(FTBO_AZ_B2, band_stop);
+FTBO_AZ_B3 = series(FTBO_AZ_B2, band_stop)
 
 [Gm_AZ Pm_AZ wgm wpm] = margin(FTBO_AZ_B3);
 zeta = sqrt(tand(Pm_AZ)*sind(Pm_AZ))/2;
@@ -214,13 +221,12 @@ wn = wpm*tand(Pm_AZ)/(2*zeta);
 ts = 4/(zeta*wn)
 BW = wpm*sqrt(1-zeta^2+sqrt(4*zeta^4-4*zeta^2+2))/sqrt(sqrt(1+4*zeta^4)-2*zeta^2)
 
-figure(41)
+figure
 margin(FTBO_AZ_B3)
-%xlim([40 60])
+xlim([40 60])
 
 figure
-step(feedback(FTBO_AZ,1),feedback(FTBO_AZ_B1,1),feedback(FTBO_AZ_B2,1),feedback(FTBO_AZ_B3,1), [0:0.001:5])
-legend('Original','AvPh','AvPh+RePh','Coupe Bande')
+step(feedback(FTBO_AZ_B3,1), [0:0.001:5])
 
 figure
 rlocus(FTBO_AZ_B3)
@@ -228,5 +234,4 @@ rlocus(FTBO_AZ_B3)
 t = [0:0.01:30];
 u = t;
 figure
-lsim(feedback(FTBO_AZ_B2, 1),feedback(FTBO_AZ_B3, 1),u,t) 
-legend('AvPh+RePh','Coupe Bande')
+lsim(feedback(FTBO_AZ_B3, 1),u,t) 
