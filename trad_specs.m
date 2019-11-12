@@ -10,5 +10,13 @@ wa = wn*sin(theta);
 s(1) = -z*wn + wa*i;
 s(2) = -z*wn - wa*i;
 
-z_B = sqrt(tand(des_PM_B)*sind(des_PM_B))/2
-wg_B = des_BW_B*sqrt(sqrt(1+4*z_B^4)-2*z_B^2)/sqrt((1-2*z_B^2)+sqrt(4*z_B^4-4*z_B^2+2))
+mrg_PM_AZ = 5
+% mrg_PM_AZ = 5
+
+mrg_PM_EL = 5
+% mrg_PM_EL = 5
+
+z_B_AZ = sqrt(tand(des_PM_B+mrg_PM_AZ)*sind(des_PM_B+mrg_PM_AZ))/2
+z_B_EL = sqrt(tand(des_PM_B+mrg_PM_EL)*sind(des_PM_B+mrg_PM_EL))/2
+wg_B_AZ = des_BW_B*sqrt(sqrt(1+4*z_B_AZ^4)-2*z_B_AZ^2)/sqrt((1-2*z_B_AZ^2)+sqrt(4*z_B_AZ^4-4*z_B_AZ^2+2))
+wg_B_EL = des_BW_B*sqrt(sqrt(1+4*z_B_EL^4)-2*z_B_EL^2)/sqrt((1-2*z_B_EL^2)+sqrt(4*z_B_EL^4-4*z_B_EL^2+2))
