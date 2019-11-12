@@ -143,7 +143,7 @@ plot(ramp',y_ramp_diff)
 % rep_traj_A = lsim(FTBF_AZ,utrk,ttrk);
 
 % calcul de la correlation
-% R_2 = sum((utrk - mean(rep_traj_A)).^2) / sum((rep_traj_A - mean(rep_traj_A)).^2)
+% R_2_A = sum((utrk - mean(rep_traj_A)).^2) / sum((rep_traj_A - mean(rep_traj_A)).^2)
 
 
 
@@ -238,3 +238,12 @@ t = [0:0.01:30];
 u = t;
 figure
 lsim(feedback(FTBO_AZ_B3, 1),u,t) 
+FTBF_AZ_B = feedback(FTBO_AZ_B3,1)
+%% verification de la trajectoire
+
+% figure()
+% lsim(FTBF_EL_PI,utrk,ttrk)
+% rep_traj_B = lsim(FTBF_AZ_B,utrk,ttrk);
+
+% calcul de la correlation
+% R_2_B = sum((utrk - mean(rep_traj_B)).^2) / sum((rep_traj_B - mean(rep_traj_B)).^2)

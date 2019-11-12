@@ -209,3 +209,11 @@ t = [0:0.01:30];
 u = t;
 figure
 lsim(feedback(FTBO_EL_B3, 1),u,t) 
+FTBF_EL_B=  feedback(FTBO_EL_B3,1)
+%% verification de la trajectoire
+% figure()
+% lsim(FTBF_EL_B,utrk,ttrk)
+% rep_traj_B = lsim(FTBF_EL_B,utrk,ttrk);
+
+% calcul de la correlation
+% R_2_B = sum((utrk - mean(rep_traj_B)).^2) / sum((rep_traj_B - mean(rep_traj_B)).^2)
