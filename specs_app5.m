@@ -22,6 +22,7 @@ des_eru_AZ_A = 0.05; % Erreur Rampe Unitaire en Regime Permanent
 des_eru_EL_A = 0;
 des_epu_AZ_A = NaN;  % Erreur Parabole Unitaire en Regime Permanent
 des_epu_EL_A = 0.1;
+des_PM_B = 60; % +- 5 deg
 
 % critere de securite
 sec_PM_A = 10;              % db
