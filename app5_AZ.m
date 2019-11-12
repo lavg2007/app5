@@ -212,6 +212,9 @@ w_width = 10
 num_band_stop = [1 0 w_c^2];
 den_band_stop = [1 w_width w_c^2];
 band_stop = tf(num_band_stop, den_band_stop)
+[num_cheb den_cheb] = cheby1(2,0,[w_c-w_width/2 w_c+w_width/2], 'stop', 's')
+band_stop = tf(num_cheb, den_cheb)
+
 
 FTBO_AZ_B3 = series(FTBO_AZ_B2, band_stop)
 
