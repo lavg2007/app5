@@ -104,10 +104,18 @@ Où $k_a$ est le gain à appliquer au filtre pour enlever l'impacte qu'il aurait
 \\
 \textcolor{red}{mettre lieu de bode}
 \\
+Comme il est possibles de le voir sur les dernières figures () et () il reste une bonne quantité de raisonnance dans le système en azimut. Pour réduire, voir éliminer ce phénomène, un filtre coupe bande est utilisé directement dans la boucle ouverte. La fréquence de coupure de celui-ci est déterminé par la fréquence du pic dans le lieu de bode () et une largeur de 12 rad par seconde est utilisée afin de minimiser l'impacte général du coupe bande sur le reste du système. Le coupe bande obtenu est donc :
+\[H(s) = \frac{s^2 - 54.8^2}{s^2 + 12s + 54.8^2}\]
+\\
+\textcolor{red}{mettre le resultat  de l'ajout du AvPh2}
+\\
+\textcolor{red}{mettre lieu de bode}
+\\
 \subsubsection{Iterations}
+Les figures () () () et () montre bien l'effet de l'ajout des compensateur d'avance de phase et du coupe bande, mais les calculs de temps de monté, de dépassement maximal et de stabilisation montrent les défaults restants après toutes les corrections ajoutées précedemment. En effet, la marge de retard n'est pas plus grande que 0.1. Pour rectifier cette situation, il a suffit d'ajouter une petite surcompensation, trouvée par itération, initialement au $\Delta \phi$ du premier compensateur afin de prévenir le retard de phase créé par l'ajout du coupe bande. Une fois cette dernière modification faite, les résultats finaux sont obtenus et seront évalués dans la section \ref{valid_AZ_A}. Comme il y a beaucoup d'ajout de compensateur et de filtre entre les spécifications initiales et le résultat final, il est normal d'avoir à faire un ajustement itératif à la fin du processus de design. L'ajout de plusieurs filtres en cascade vient modifier légèrement les résultats obtenus précédemment et les calculs pour prédire chacun des changements prendrait beaucoup plus de temps que de seulement itérer sur quelques valeurs précises.
 \subsubsection{Graphiques}
 \subsubsection{Conformité}
-\subsubsection{Validation de la trajectoire de référence}
+\subsubsection{Validation de la trajectoire de référence} \label{valid_AZ_A}
 \subsection{Élévation}
 \subsubsection{Design initial}
 \subsubsection{Iterations}
