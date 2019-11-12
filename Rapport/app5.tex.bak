@@ -116,6 +116,7 @@ La figure \ref{fig:step_A_AZ_comp_wcb} montre bien l'effet de l'ajout des compen
 \subsubsection{Validation de la trajectoire de référence} \label{valid_AZ_A}
 En conclusion de la figure (), le système répond très bien aux consignes demandées par la trajectoire. Certains petits pic ou renflement sont visible, mais les valeurs de ceux-ci sont cohérente avec les valeurs d'érreur en régime permanent et en fonction des disparités dans les régimes transitoires. Comme l'allure générales de la trajectoire obtenue est bonne, il est acceptable de regarder la valeur du coefficient de corrélation. Celui-ci est de 0.9998, ce qui indique que la réponse représente très bien la consigne.
 \subsection{Élévation}
+\subsubsection{Design initial}
 La réponse à l'échellon du système en élévation répond sensiblement de la même façon que lui en azimut, comme le montre la figure ()
 \\
 \textcolor{red}{mettre la rep ech EL}
@@ -130,8 +131,13 @@ et la fonction de transfert résultante est:
 \textcolor{red}{mettre lieu de bode}
 \\
 Bien que le régime transitoire soit très bien, il est impossible pour l'instant de satisfaire les normes d'erreur à une parabole unitaire, car le système présent n'est qu'un classe 1 et donc avec un erreur infini. Pour régler ce problème, un autre compensateur devra être utilisé.
-\subsubsection{Design initial}
-\subsubsection{Iterations}
+
+\subsubsection{Desing final}
+Afin de respecter l'erreur à la parabole, un augmentation de la classe est nécessaire. Ceci peut être fait avec un PI, car le pôles de ce compensateur sera situé sur l'intersection entre l'axe réel et imaginaire. L'utilisation de la règle du pouce place le zéro un peu trop à droite sur l'axe réel, il a donc été déplacé par des tests jusqu'à obtenir un point satifesant les critères d'acceptation. Le compensateur PI est :
+\[PI_{EL} = 1 \cdot \frac{s+0.4501}{s}\]
+Le gain de ce filtre n'est pas modifié, afin d'éviter l'amplification des hautes fréquences.
+
+Deplus, un filtre coupe-bande est aussi nécessaire dans ce cas afin de réduire la réponse au vibrations. La fréquence de coupure de ce filtre est déterminé, comme en azimut, sur le lieu de Bode. La fréquence du pic (voir la figure () ) nécéssite d'avoir un gain de moins de -15db pour satisfaire les demandes du client. Un filtre chebychev est créé à l'aide de MatLab pour simplifier l'utilisation. 
 
 \subsubsection{Conformité}
 \subsubsection{Validation de la trajectoire de référence}
