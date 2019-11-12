@@ -87,7 +87,10 @@ Comme la phase à compenser est positive, il est évident qu'une compensation pa
 \\
 \textcolor{red}{mettre lieu de bode}
 \\
-L'ajout de ce compensateur améliore le régime transitoire, mais ne permet pas de répondre aux spécifications de sécurité. Un autre compensateur d'avancement de phase est donc nécessaire pour respecter le marge de retard acceptable. Un approche par la méthode de bode doit être utilisé, car les spécifications sont dans le domaine fréquentiel. La marge de phase désiré est calculée à la fréquence de traverse en gain afin de déterminer par combien la phase du système doit être augmentée. Le gain permetant la traverse en fréquence doit rester le même \textcolor{red}{parce que........}, le $K^*$ est donc de 1.
+
+\subsubsection{Design final}
+
+L'ajout de ce dernier compensateur améliore le régime transitoire, mais ne permet pas de répondre aux spécifications de sécurité. Un autre compensateur d'avancement de phase est donc nécessaire pour respecter le marge de retard acceptable. Un approche par la méthode de bode doit être utilisé, car les spécifications sont dans le domaine fréquentiel. La marge de phase désirée est calculée à la fréquence de traverse en gain afin de déterminer par combien la phase du système doit être augmentée. Le gain permetant la traverse en fréquence doit rester le même \textcolor{red}{parce que........}, le $K^*$ est donc de 1.
 La marge de phase nécessaire est 
 \[ TM = \frac{PM^*}{\omega_n}\cdot\frac{\pi}{180}\]
 \[PM^* = 52.8378^\circ\]
@@ -97,29 +100,39 @@ On obtient donc la phase à compenser
 Où $PM$ est la marge de phase du système à corriger (système corrigé seulement par le premier AvPh). En utilisant les formules de la page 28 du chapitre 7 des notes de Jean de LaFontaine, le compensateur suivant est obtenu
 \[AvPh = k_a\frac{s-z}{s-p}\]
 \[k_a = \frac{K^*}{\vert \frac{s-z}{s-p} \vert}\]
-\[ AvPh_2 = 1.4459 \cdot \frac{s+6.3777}{s+13.3346}\]
+\[ AvPh_2 =  1.3933 \cdot \frac{s+6.6186}{s+12.8493}\]
 Où $k_a$ est le gain à appliquer au filtre pour enlever l'impacte qu'il aurait sur la fréquence de traverse en fréquence.
-\\
-\textcolor{red}{mettre le resultat  de l'ajout du AvPh2}
-\\
-\textcolor{red}{mettre lieu de bode}
-\\
-Comme il est possibles de le voir sur les dernières figures () et () il reste une bonne quantité de raisonnance dans le système en azimut. Pour réduire, voir éliminer ce phénomène, un filtre coupe bande est utilisé directement dans la boucle ouverte. La fréquence de coupure de celui-ci est déterminé par la fréquence du pic dans le lieu de bode () et une largeur de 12 rad par seconde est utilisée afin de minimiser l'impacte général du coupe bande sur le reste du système. Le coupe bande obtenu est donc :
+
+Comme il est possible de le voir sur les dernières figures () et () il reste une bonne quantité de raisonnance dans le système en azimut. Pour réduire, voir éliminer ce phénomène, un filtre coupe bande est utilisé directement dans la boucle ouverte. La fréquence de coupure de celui-ci est déterminé par la fréquence du pic dans le lieu de bode () et une largeur de 12 rad par seconde est utilisée afin de minimiser l'impacte général du coupe bande sur le reste du système. Le coupe bande obtenu est donc :
 \[H(s) = \frac{s^2 - 54.8^2}{s^2 + 12s + 54.8^2}\]
+\insertFigure{step_A_AZ_comp_wcb}{0.8}{comparaison des réponses en fréquence}{fig:step_A_AZ_comp_wcb}
+
+La figure \ref{fig:step_A_AZ_comp_wcb} montre bien l'effet de l'ajout des compensateurs d'avance de phase et du coupe bande, mais les calculs de temps de monté, de dépassement maximal et de stabilisation montrent les défaults restants après toutes les corrections ajoutées précedemment. En effet, la marge de retard n'est pas plus grande que 0.1. Pour rectifier cette situation, il a suffit d'ajouter une petite surcompensation, trouvée par itération, initialement au $\Delta \phi$ du premier compensateur afin de prévenir le retard de phase créé par l'ajout du coupe bande. Une fois cette dernière modification faite, les résultats finaux sont obtenus et seront évalués dans la section \ref{valid_AZ_A}. Comme il y a beaucoup d'ajout de compensateur et de filtre entre les spécifications initiales et le résultat final, il est normal d'avoir à faire un ajustement itératif à la fin du processus de design. L'ajout de plusieurs filtres en cascade vient modifier légèrement les résultats obtenus précédemment et les calculs pour prédire chacun des changements prendrait beaucoup plus de temps que de seulement itérer sur quelques valeurs précises. Une fois les itérations faites, voici la fonction de transfert du deuxième compensateur d'avance de phase.
+\[ AvPh_2 =  1.4459 \cdot \frac{s+6.3777}{s+13.3346}\]
 \\
-\textcolor{red}{mettre le resultat  de l'ajout du AvPh2}
+\textcolor{red}{mettre résultat final}
 \\
-\textcolor{red}{mettre lieu de bode}
-\\
-\subsubsection{Iterations}
-Les figures () () () et () montre bien l'effet de l'ajout des compensateur d'avance de phase et du coupe bande, mais les calculs de temps de monté, de dépassement maximal et de stabilisation montrent les défaults restants après toutes les corrections ajoutées précedemment. En effet, la marge de retard n'est pas plus grande que 0.1. Pour rectifier cette situation, il a suffit d'ajouter une petite surcompensation, trouvée par itération, initialement au $\Delta \phi$ du premier compensateur afin de prévenir le retard de phase créé par l'ajout du coupe bande. Une fois cette dernière modification faite, les résultats finaux sont obtenus et seront évalués dans la section \ref{valid_AZ_A}. Comme il y a beaucoup d'ajout de compensateur et de filtre entre les spécifications initiales et le résultat final, il est normal d'avoir à faire un ajustement itératif à la fin du processus de design. L'ajout de plusieurs filtres en cascade vient modifier légèrement les résultats obtenus précédemment et les calculs pour prédire chacun des changements prendrait beaucoup plus de temps que de seulement itérer sur quelques valeurs précises.
-\subsubsection{Graphiques}
 \subsubsection{Conformité}
 \subsubsection{Validation de la trajectoire de référence} \label{valid_AZ_A}
+En conclusion de la figure (), le système répond très bien aux consignes demandées par la trajectoire. Certains petits pic ou renflement sont visible, mais les valeurs de ceux-ci sont cohérente avec les valeurs d'érreur en régime permanent et en fonction des disparités dans les régimes transitoires. Comme l'allure générales de la trajectoire obtenue est bonne, il est acceptable de regarder la valeur du coefficient de corrélation. Celui-ci est de 0.9998, ce qui indique que la réponse représente très bien la consigne.
 \subsection{Élévation}
+La réponse à l'échellon du système en élévation répond sensiblement de la même façon que lui en azimut, comme le montre la figure ()
+\\
+\textcolor{red}{mettre la rep ech EL}
+\\
+Encore une fois, le régime transitoire est à corriger étant donné la très longue oscillation. Pour ce faire, un compensateur en avance de phase sera utilisé, de manière à tirer le lieu des racines vers la gauche, et donc de stabiliser la fonction de transfert. La technique de la bissectrice est encore une fois utilisé et les pôles désirés sont les mêmes que pour le système en azimut, car les mêmes spécifications de design sont utilisés. En appliquant le même calcul que pour le $\Delta \phi$ en azimut, les résutats suivants sont obtenus:
+\[\Delta \phi = 74.4336^\circ\]
+et la fonction de transfert résultante est:
+\[AvPh_{EL} = 12.1850 \cdot \frac{s+3.7657}{s+33.0051}\]
+\\
+\textcolor{red}{mettre le resultat  de l'ajout du AvPh}
+\\
+\textcolor{red}{mettre lieu de bode}
+\\
+Bien que le régime transitoire soit très bien, il est impossible pour l'instant de satisfaire les normes d'erreur à une parabole unitaire, car le système présent n'est qu'un classe 1 et donc avec un erreur infini. Pour régler ce problème, un autre compensateur devra être utilisé.
 \subsubsection{Design initial}
 \subsubsection{Iterations}
-\subsubsection{Graphiques}
+
 \subsubsection{Conformité}
 \subsubsection{Validation de la trajectoire de référence}
 %----------------------------------------------------------------------------------------------------------------------%
@@ -127,13 +140,13 @@ Les figures () () () et () montre bien l'effet de l'ajout des compensateur d'ava
 \subsection{Azimut}
 \subsubsection{Design initial}
 \subsubsection{Iterations}
-\subsubsection{Graphiques}
+
 \subsubsection{Conformité}
 \subsubsection{Validation de la trajectoire de référence}
 \subsection{Élévation}
 \subsubsection{Design initial}
 \subsubsection{Iterations}
-\subsubsection{Graphiques}
+
 \subsubsection{Conformité}
 \subsubsection{Validation de la trajectoire de référence}
 %----------------------------------------------------------------------------------------------------------------------%
