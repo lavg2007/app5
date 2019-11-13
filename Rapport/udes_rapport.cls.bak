@@ -256,11 +256,16 @@ Sherbrooke \\
 \DeclareDocumentCommand \insertFigure
     { 
     % Arguments
-    O{simple}   % #1 Type de wrapping (2 options: figure ou wrapfig
-    m           % #2 Nom de la figure
-    m           % #3 Taille de la figure
-    m           % #4 Sous titre
-    m           % #5 Étiquette
+    m   % #1 Type de wrapping (2 options: simple ou double
+    m           % #2 Nom de la figure 1
+    m           % #3 Taille de la figure 1
+    m           % #4 Sous titre de la figrue 1
+    %optional -- double figure
+    o           % #5 Nom de la sous figure 2
+    o           % #6 Sous titre de la  sousfigrue 2
+    o			% #7 Sous titre de la figure entiere
+    o			% #8 Étiquette de la figure entiere
+    % \insertFigure{#1}{#2}{#3}{#4}{#5}{#6}{#7}{8}
     }
     { 
     \ifthenelse{\equal{#1}{simple}}{
@@ -268,13 +273,19 @@ Sherbrooke \\
 	\centering
 	\includegraphics[width=#3\textwidth]{#2}
 	\captionof{figure}{#4}
-	\label{#5}
+	\label{fig:#2}
 	\end{center}
-    }{}%
+    }{
     \ifthenelse{\equal{#1}{double}}{
+	\centering
+	\includegraphics[width=#3\textwidth]{#2}
+	\captionof{subfigure}{#4}
+	\label{fig:#2}
+	}%
+    
         
-    }{}%
-}
+    }%{}%
+	}
 
 % ----------------------------------------------------
 % Commandes code linting

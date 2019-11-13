@@ -22,7 +22,10 @@ Profile_Tracking;
 % reponse a l'echellon initiale
 figure()
 step(feedback(FTBO_AZ,1))
-saveas(gcf,'FTBO_AZ')
+saveas(gcf,'FTBO_AZ.png')
+figure()
+margin(FTBO_AZ)
+saveas(gcf,'marges_FTBO_AZ.png')
 %% Compensateur pour AZIMUT
 % creation d'un avance de phase
 phase_AZ = rad2deg(angle(numAZ/polyval(denAZ,s(1))))
@@ -58,6 +61,10 @@ y_FTBF_AZ = step(feedback(FTBO_AZ,1),5);
 legend('FTBO-AZ*AvPh','FTBO-AZ');
 title('Step comparaison FTBO-AZ*AvPh-AZ');
 
+figure(30)
+hold on
+margin(FTBO_AZ*AvPh_AZ)
+saveas(gcf,'FTBO_AZ_AvPh_marge.png')
 %% verification du systeme asservi par l'AvPh
 FTBF_AZ_AvPh = feedback(FTBO_AZ*AvPh_AZ,1);
 [num_FTBO_AZ_AvPh,den_FTBO_AZ_AvPh] = tfdata(FTBO_AZ*AvPh_AZ,'v');

@@ -19,9 +19,16 @@ Profile_Tracking;
 % rlocus(FTBO_EL)
 % scatter(real(s),imag(s),'p')
 % title('LdR FTBO-EL')
+figure()
+step(feedback(FTBO_EL,1))
+saveas(gcf,'FTBO_EL.png')
+figure()
+margin(FTBO_EL)
+saveas(gcf,'marges_FTBO_EL.png')
+
 %% Compensateur pour ELEVATION
 % creation d'un avance de phase
-marge = 0%12%20.5;%19;5
+marge = 12%20.5;%19;5
 phase_EL = rad2deg(angle(numEL/polyval(denEL,s(1))));
 delta_phi_AvPh_EL = -180 - phase_EL + 360 + marge;
 phi_AvPh_EL = 180 - rad2deg(atan2(imag(s(1)),real(s(1))));
@@ -54,6 +61,11 @@ AvPh_EL = ka_AvPh_EL*tf(num_AvPh_EL,den_AvPh_EL);
 FTBF_EL_AvPh = feedback(FTBO_EL*AvPh_EL,1);
 stepinfo(FTBF_EL_AvPh)
 
+figure(30)
+hold on
+margin(FTBO_EL*AvPh_EL)
+saveas(gcf,'FTBO_EL_AvPh_marge_no.png')
+
 [num_FTBO_AvPh_EL,den_FTBO_AvPh_EL] = tfdata(FTBO_EL*AvPh_EL,'v');
 kvel_EL = polyval(num_FTBO_AvPh_EL,0)/polyval([den_FTBO_AvPh_EL(1:end-1)],0);
 eru_EL = 1/kvel_EL;
@@ -82,7 +94,7 @@ step(feedback(FTBO_EL,1),5);
 step(feedback(FTBO_EL*AvPh_EL,1),5);
 step(feedback(FTBO_EL*AvPh_EL*PI_EL,1),5);
 step(feedback(FTBO_EL*AvPh_EL*PI_EL*band_stop,1),5);
-legend('PI_EL','band_stop');
+legend('FTBO_EL','AvPh_EL','PI_EL','band_stop');
 xlim([0 3])
 saveas(gcf,'step_A_EL_comp.png')
 stepinfo(feedback(FTBO_EL*AvPh_EL*PI_EL*band_stop,1))
