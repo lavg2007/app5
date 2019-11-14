@@ -311,7 +311,64 @@ Comme pour l'azimut, la trajectoire est très semblables à la consigne mise à 
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Design du télescope B}
 \subsection{Azimut}
+La section 3.1 de ce rapport présente les caractéristiques du système azimutal avant sa compensation. Rappelons qu'il offre une marge de phase de 1.03 degrés à 5 rad/s. 
+%%%%%%% FIGURE %%%%%%%
+%double figure
+\noindent\begin{minipage}{\textwidth}
+ 
+
+\begin{minipage}{0.5\textwidth}
+\insertFigure{double}{start_rampe_B_AZ}{1}{Réponse à la rampe unitaire}
+\end{minipage} 
+\begin{minipage}{0.5\textwidth}
+\insertFigure{double}{start_erreur_B_AZ}{1}{Erreur de la réponse à la rampe}
+\end{minipage}%
+
+\captionof{figure}{Téléscope B en Azimut - Observations initiales} 
+\label{fig:init_B_AZ} 
+\end{minipage}
+On observe dans ces deux graphiques que le système original en azimut répond à la rampe unitaire avec une forte oscillation, qui prend environs 122 secondes à se stabiliser à 2\%.
 \subsubsection{Design initial}
+La marge de phase du système initiale est largement insatisfaisante, considérant le requis de 50 degrés. On doit donc débuter par la conception d'un compensateur avance de phase. D'ailleurs, puisque le client impose un critère de design sur l'erreur en régime permanent, un compensateur retard de phase devra aussi être ajouté au système. On assouplit donc le critère de phase à 55 degrés pour la conception du premier.\\
+On débute donc en traduisant les critères en paramètres standards. Dans ce cas, la marge de phase nous donne l'amortissemnent $\zeta$ par l'équation suivante.
+\[ \zeta =  \frac{1}{2}\sqrt{tan(PM)sin(PM)} = 0.5408\]
+À partir de cette valeur et du critère sur la bande passante, on utilise l'équation suivante pour calculer la fréquence de traverse en gain.
+\[ \omega_g =  \frac{BW\sqrt{\sqrt{1+4\zeta^4}-2\zeta^2}}{\sqrt{1-2\zeta^2+\sqrt{4\zeta^4-4\zeta^2+2}}} = 6.188\]
+On remarque, en se référant à la figure \ref{fig:init_A_AZ}, que la marge de phase est trop petite, et que la fréquence de traverse en gain est trop basse. Il faut donc déterminer le gain $K^*$ qu'il faut appliquer à $\omega_g$.
+\[K^* = \frac{1}{|G(s)|_{s=j\omega_g}} = 1.528\]
+Le lieu de Bode suivant montre la réponse en fréquence du système avec le gain $K^*$ mais sans compensation. On remarque que le tracé passe par 0 dB à la fréquence $\omega_g$ calculée. De plus, comme le critère de design en marge de phase n'est toujours pas respecté, on doit poursuivre la conception.
+
+%%%%%%% FIGURE %%%%%%%
+\insertFigure{simple}{B_AZ_margin_init_K}{0.8}{Lieu de bode de l'azimut avec gain $K^*$}
+%%%%%%%%%%%%%%%%%%%%%%
+
+La figure 14 nous indique l'avance de phase que doit fournir le compensateur, qu'on peut calculer ainsi.
+\[ \Delta \phi = PM^* - \langle K^*G(s)\rangle_{s=j\omega_g^*} -(-180)=60.06\] 
+La phase positive confirme qu'on doit effectivement ajouter un compensateur avance de phase au système. Celui-ci a la forme standard suivante.
+ \[ G_a(s)=K_a\frac{s+\frac{1}{T}}{s+\frac{1}{\alpha T}}, \quad \alpha = \frac{1-sin\Delta\phi}{1-sin\Delta\phi}, \quad T = \frac{1}{\omega_g^*\sqrt{\alpha}}\]
+ À partir de ces paramètres, on retrouve le pôle et le zéro ajoutés au système par le compensateur. On calcule finalement son gain de façon à ce qu'il fournisse un gain de $K^*$ à la fréquence $\omega_g^*$. L'équation se simplifie ainsi.
+ \[K_a = \frac{K^*}{\sqrt{\alpha}}\]
+On peut maintenant construire la fonction de transfert en boucle ouverte du compensateur avance de phase.
+\[ G_a(s) = 5.714\,\frac{s+1.655}{s+23.14} = \frac{5.71s+9.46}{s+23.1} \]
+On remarque sur la figure 15 que le critère de marge de phase est respecté, à la fréquence de traverse voulue.
+%%%%%%% FIGURE %%%%%%%
+\insertFigure{simple}{B_AZ_margin_avph}{0.8}{Lieu de bode de l'azimut avec compensateur avance de phase}
+%%%%%%%%%%%%%%%%%%%%%%
+Cependant, l'erreur en régime permanent sur la rampe unitaire du nouveau système ne respecte pas le critère de design.
+\[ e_{rp} = \frac{1}{K_{vel}} = \frac{1}{|sG_a(s)G(s)|_{s=0}}=0.127 \]
+On doit donc ajouter un compensateur retard de phase au système. Premièrement, le gain aux basse fréquences requis est calculé ainsi.
+
+\[ K^* = \frac{K_{vel}^*}{K_{vel}} = \frac{1/e_{rp}^*}{|sG_a(s)G(s)|_{s=0}} =  25.19\]
+
+Le compensateur retard de phase a la forme standard suivante.
+ \[ G_r(s)=K_r\frac{s+\frac{1}{T}}{s+\frac{1}{\beta T}}, \quad \beta = K^*, \quad T = \frac{10}{\omega_g^*}\]
+ Le gain $K_r$ sera ajusté par la suite pour respecter les critères d'acceptation finaux. On peut donc le fixer à l'unité pour l'instant. Après le calcul des paramètres, on obtiens la fonction de transfert suivante.
+\[ G_r(s) = \frac{s+0.619}{s+0.024} \]
+Finalement, on veut atténuer la résonance du système à environ 55 rad/s. Un coupe bande est donc ajouté, avec la forme de Chebychev, ce qui complète le design initial.
+%%%%%%% FIGURE %%%%%%%
+\insertFigure{simple}{B_AZ_margin_bandstop}{0.8}{Design initial de la compensation en azimut}
+%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Iterations}
 
 \subsubsection{Conformité}
