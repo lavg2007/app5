@@ -11,6 +11,7 @@ specs_app5
 %--------------------------------------------------------------------------
 %% traduction des specifications
 trad_specs
+Profile_Tracking;
 
 % creation du lieu des raciines
 % figure(1)
@@ -18,10 +19,17 @@ trad_specs
 % rlocus(FTBO_AZ)
 % scatter(real(s),imag(s),'p')
 % title('LdR FTBO-AZ')
+% reponse a l'echellon initiale
+figure()
+step(feedback(FTBO_AZ,1))
+saveas(gcf,'FTBO_AZ.png')
+figure()
+margin(FTBO_AZ)
+saveas(gcf,'marges_FTBO_AZ.png')
 %% Compensateur pour AZIMUT
 % creation d'un avance de phase
 phase_AZ = rad2deg(angle(numAZ/polyval(denAZ,s(1))))
-delta_phi_AvPh_AZ = -180 - phase_AZ +360
+delta_phi_AvPh_AZ = -180 - phase_AZ + 360
 phi_AvPh_AZ = 180 - rad2deg(atan2(imag(s(1)),real(s(1))));
 alpha_AvPh_AZ = 180-phi_AvPh_AZ;
 phi_z_AvPh_AZ = (alpha_AvPh_AZ + delta_phi_AvPh_AZ)/2;
@@ -37,11 +45,12 @@ AvPh_AZ = ka_AvPh_AZ*tf(num_AvPh_AZ,den_AvPh_AZ);
 % ka_AvPh2_AZ = 1/norm(ka_AvPh_AZ*(s(1)-z_AvPh_AZ)/(s(1)-p_AvPh_AZ)*(s(1)-z_AvPh_AZ)/(s(1)-p_AvPh_AZ)* numAZ/polyval(denAZ,s(1)))
 % AvPh2_AZ = ka_AvPh2_AZ*tf(num_AvPh_AZ,den_AvPh_AZ);
 % creation du lieu des racines avec l'AvPH
-figure(2)
-hold on
-rlocus(FTBO_AZ*AvPh_AZ)
-scatter(real(s),imag(s),'p')
-title('LdR FTBO-AZ*AvPh-AZ')
+% figure(2)
+% hold on
+% rlocus(FTBO_AZ*AvPh_AZ)
+% scatter(real(s),imag(s),'p')
+% title('LdR FTBO-AZ*AvPh-AZ')
+
 
 figure(3)
 hold on
@@ -52,6 +61,10 @@ y_FTBF_AZ = step(feedback(FTBO_AZ,1),5);
 legend('FTBO-AZ*AvPh','FTBO-AZ');
 title('Step comparaison FTBO-AZ*AvPh-AZ');
 
+figure(30)
+hold on
+margin(FTBO_AZ*AvPh_AZ)
+saveas(gcf,'FTBO_AZ_AvPh_marge.png')
 %% verification du systeme asservi par l'AvPh
 FTBF_AZ_AvPh = feedback(FTBO_AZ*AvPh_AZ,1);
 [num_FTBO_AZ_AvPh,den_FTBO_AZ_AvPh] = tfdata(FTBO_AZ*AvPh_AZ,'v');
@@ -66,6 +79,7 @@ figure(5)
 margin(FTBO_AZ*AvPh_AZ)
 [Gm_AZ,Pm_AZ,Wp_AZ,Wg_AZ] = margin(FTBO_AZ*AvPh_AZ);
 RM_AZ = Pm_AZ/Wg_AZ*pi/180
+
 
 % creation d'un second AvPh pour respecter la marge de retard
 PM_AZ_des = sec_RM_AZ_A *180/pi *Wg_AZ
@@ -103,7 +117,7 @@ eru2_AZ_A = 1/Kvel2
 %% ajout d'un coupe bande
 % trouver la frequence de coupure
 freq_coup = 54.8 % rad/sec trouve avec bode
-w_width = 12
+w_width = 20
 num_band_stop = [1 0 freq_coup^2];
 den_band_stop = [1 w_width freq_coup^2];
 band_stop = tf(num_band_stop,den_band_stop);
@@ -112,39 +126,51 @@ figure(9);
 hold on;
 step(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1),5);
 step(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ,1),5);
-legend('AvPh2_AZ','band_stop');
+step(feedback(FTBO_AZ*AvPh_AZ,1),5);
+step(feedback(FTBO_AZ,1),5);
+legend('band_stop','AvPh2','AvPh1','ori');
+saveas(gcf,'step_A_AZ_comp_wcb.png')
+xlim([0 3])
 stepinfo(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1))
 %% verification final
 figure(10)
 margin(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop)
 [Gm3_AZ,Pm3_AZ,Wp3_AZ,Wg3_AZ] = margin(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop);
 RM3_AZ = Pm3_AZ/Wg3_AZ*pi/180
-
+saveas(gcf,'marges_A_AZ.png')
 [num_FTBO_AZ_AvPh3,den_FTBO_AZ_AvPh3] = tfdata(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,'v');
 Kvel3 = polyval(num_FTBO_AZ_AvPh3,0)/polyval([den_FTBO_AZ_AvPh3(1:end-1)],0);
 eru3_AZ_A = 1/Kvel3
-
+tr0100 = (pi-acos(z))/wa
 stepinfo(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1))
 FTBF_AZ = feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1)
-ramp = [0:0.1:20];
-figure
-hold on 
-lsim(FTBF_AZ,ramp,ramp)
-
-
+%% erreur a la rampe
+ramp = [0:0.001:5];
 y_ramp = lsim(FTBF_AZ,ramp,ramp);
-y_ramp_diff = y_ramp-ramp';
+y_ramp_diff = ramp' - y_ramp;
 
 figure()
+hold on
+line([0 5],[y_ramp_diff(end)*1.02 y_ramp_diff(end)*1.02],'LineStyle','--');
+line([0 5],[y_ramp_diff(end)*0.98 y_ramp_diff(end)*0.98],'LineStyle','--');
 plot(ramp',y_ramp_diff)
+saveas(gcf,'ramp_AZ_A.png')
+t2_ramp_AZ_A = 0.001 * find(y_ramp_diff<y_ramp_diff(end)*1.02)
+
+figure()
+hold on
+bode(FTBO_AZ)
+bode(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop)
+legend('originale','finale')
+saveas(gcf,'HF_minimal_AZ.png')
 %% verification de la trajectoire
-% figure()
-% lsim(FTBF_EL_PI,utrk,ttrk)
-% rep_traj_A = lsim(FTBF_AZ,utrk,ttrk);
+figure()
+lsim(FTBF_AZ,utrk,ttrk)
+rep_traj_A = lsim(FTBF_AZ,utrk,ttrk);
 
 % calcul de la correlation
-% R_2_A = sum((utrk - mean(rep_traj_A)).^2) / sum((rep_traj_A - mean(rep_traj_A)).^2)
-
+R_2_A = sum((utrk - mean(rep_traj_A)).^2) / sum((rep_traj_A - mean(rep_traj_A)).^2)
+saveas(gcf,'Verif_trajectoire_A_AZ.png')
 
 
 %% Telescope B
@@ -241,9 +267,10 @@ lsim(feedback(FTBO_AZ_B3, 1),u,t)
 FTBF_AZ_B = feedback(FTBO_AZ_B3,1)
 %% verification de la trajectoire
 
-% figure()
-% lsim(FTBF_EL_PI,utrk,ttrk)
-% rep_traj_B = lsim(FTBF_AZ_B,utrk,ttrk);
+figure()
+lsim(FTBF_AZ_B,utrk,ttrk)
+rep_traj_B = lsim(FTBF_AZ_B,utrk,ttrk);
 
 % calcul de la correlation
-% R_2_B = sum((utrk - mean(rep_traj_B)).^2) / sum((rep_traj_B - mean(rep_traj_B)).^2)
+R_2_B = sum((utrk - mean(rep_traj_B)).^2) / sum((rep_traj_B - mean(rep_traj_B)).^2)
+saveas(gcf,'Verif_trajectoire_B_AZ.png')
