@@ -45,11 +45,11 @@ AvPh_AZ = ka_AvPh_AZ*tf(num_AvPh_AZ,den_AvPh_AZ);
 % ka_AvPh2_AZ = 1/norm(ka_AvPh_AZ*(s(1)-z_AvPh_AZ)/(s(1)-p_AvPh_AZ)*(s(1)-z_AvPh_AZ)/(s(1)-p_AvPh_AZ)* numAZ/polyval(denAZ,s(1)))
 % AvPh2_AZ = ka_AvPh2_AZ*tf(num_AvPh_AZ,den_AvPh_AZ);
 % creation du lieu des racines avec l'AvPH
-figure(2)
-hold on
-rlocus(FTBO_AZ*AvPh_AZ)
-scatter(real(s),imag(s),'p')
-title('LdR FTBO-AZ*AvPh-AZ')
+% figure(2)
+% hold on
+% rlocus(FTBO_AZ*AvPh_AZ)
+% scatter(real(s),imag(s),'p')
+% title('LdR FTBO-AZ*AvPh-AZ')
 
 
 figure(3)
@@ -117,7 +117,7 @@ eru2_AZ_A = 1/Kvel2
 %% ajout d'un coupe bande
 % trouver la frequence de coupure
 freq_coup = 54.8 % rad/sec trouve avec bode
-w_width = 12
+w_width = 20
 num_band_stop = [1 0 freq_coup^2];
 den_band_stop = [1 w_width freq_coup^2];
 band_stop = tf(num_band_stop,den_band_stop);
@@ -141,27 +141,28 @@ saveas(gcf,'marges_A_AZ.png')
 [num_FTBO_AZ_AvPh3,den_FTBO_AZ_AvPh3] = tfdata(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,'v');
 Kvel3 = polyval(num_FTBO_AZ_AvPh3,0)/polyval([den_FTBO_AZ_AvPh3(1:end-1)],0);
 eru3_AZ_A = 1/Kvel3
-
+tr0100 = (pi-acos(z))/wa
 stepinfo(feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1))
 FTBF_AZ = feedback(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop,1)
-ramp = [0:0.1:20];
+%% erreur a la rampe
+ramp = [0:0.001:5];
 y_ramp = lsim(FTBF_AZ,ramp,ramp);
-y_ramp_diff = y_ramp-ramp';
+y_ramp_diff = ramp' - y_ramp;
 
 figure()
 hold on
-plot(ramp',ramp')
-plot(ramp',y_ramp)
+line([0 5],[y_ramp_diff(end)*1.02 y_ramp_diff(end)*1.02],'LineStyle','--');
+line([0 5],[y_ramp_diff(end)*0.98 y_ramp_diff(end)*0.98],'LineStyle','--');
+plot(ramp',y_ramp_diff)
 saveas(gcf,'ramp_AZ_A.png')
+t2_ramp_AZ_A = 0.001 * find(y_ramp_diff<y_ramp_diff(end)*1.02)
 
 figure()
 hold on
-plot(ramp',ramp')
-plot(ramp',y_ramp)
-xlim([19 20]);
-ylim([19 20]);
-saveas(gcf,'ramp_AZ_A_zoom.png')
-
+bode(FTBO_AZ)
+bode(FTBO_AZ*AvPh_AZ*AvPh2_AZ*band_stop)
+legend('originale','finale')
+saveas(gcf,'HF_minimal_AZ.png')
 %% verification de la trajectoire
 figure()
 lsim(FTBF_AZ,utrk,ttrk)
