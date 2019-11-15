@@ -175,8 +175,8 @@ saveas(gcf,'Verif_trajectoire_A_AZ.png')
 
 %% Telescope B
 
-% figure
-% margin(FTBO_AZ)
+figure
+margin(FTBO_AZ)
 
 K_AvPh_B = 1/abs(evalfr(FTBO_AZ, j*wg_B))
 
@@ -210,19 +210,17 @@ K_RePh_B = (1/des_erp_B)/Kvel;
 T_AZ_Re_B = 10/wg_B
 
 z = -1/T_AZ_Re_B
-z = -0.68
+% z = -0.68
 p = -1/(K_RePh_B*T_AZ_Re_B)
 
 Kr_AZ_B = 1/abs((j*wg_B - z)/(j*wg_B-p));
-% Kr_AZ_B = 0.95;
+Kr_AZ_B = 1;
 
 
 G_RePh_B = Kr_AZ_B*(s-z)/(s-p)
 FTBO_AZ_B2 = series(G_RePh_B, FTBO_AZ_B1)
 
-[num den] = tfdata(FTBO_AZ_B2, 'v');
-Kvel = num(end)/den(end-1);
-erp_ramp_AZ_B = 1/Kvel
+
 
 figure
 margin(FTBO_AZ_B2)
@@ -244,6 +242,10 @@ band_stop = tf(num_cheb, den_cheb)
 
 FTBO_AZ_B3 = series(FTBO_AZ_B2, band_stop)
 
+[num den] = tfdata(FTBO_AZ_B3, 'v');
+Kvel = num(end)/den(end-1);
+erp_ramp_AZ_B = 1/Kvel
+
 [Gm_AZ Pm_AZ wgm wpm] = margin(FTBO_AZ_B3);
 zeta = sqrt(tand(Pm_AZ)*sind(Pm_AZ))/2;
 wn = wpm*tand(Pm_AZ)/(2*zeta);
@@ -252,7 +254,7 @@ BW = wpm*sqrt(1-zeta^2+sqrt(4*zeta^4-4*zeta^2+2))/sqrt(sqrt(1+4*zeta^4)-2*zeta^2
 
 figure
 margin(FTBO_AZ_B3)
-xlim([40 60])
+saveas(gcf,[pwd '\Rapport\figures\B_AZ_margin_bandstop.png'])
 
 figure
 step(feedback(FTBO_AZ_B3,1), [0:0.001:5])
@@ -260,10 +262,17 @@ step(feedback(FTBO_AZ_B3,1), [0:0.001:5])
 figure
 rlocus(FTBO_AZ_B3)
 
+%%
+
 t = [0:0.01:30];
 u = t;
+
+y3 = lsim(feedback(FTBO_AZ_B3, 1),u,t); 
+
 figure
-lsim(feedback(FTBO_AZ_B3, 1),u,t) 
+plot(t,y3'-u)
+saveas(gcf,[pwd '\Rapport\figures\end_erreur_B_AZ.png'])
+
 FTBF_AZ_B = feedback(FTBO_AZ_B3,1)
 %% verification de la trajectoire
 
@@ -273,4 +282,4 @@ rep_traj_B = lsim(FTBF_AZ_B,utrk,ttrk);
 
 % calcul de la correlation
 R_2_B = sum((utrk - mean(rep_traj_B)).^2) / sum((rep_traj_B - mean(rep_traj_B)).^2)
-saveas(gcf,'Verif_trajectoire_B_AZ.png')
+saveas(gcf,[pwd '\Rapport\figures\Verif_trajectoire_B_AZ.png'])
