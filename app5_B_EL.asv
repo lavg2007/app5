@@ -73,7 +73,7 @@ band_stop = tf(num_cheb, den_cheb)
 
 FTBO_EL_B3 = series(FTBO_EL_B2, band_stop)
 
-%% Analyse du design initial
+%% Ana;y
 
 [Gm_EL Pm_EL wgm wpm] = margin(FTBO_EL_B3);
 zeta = sqrt(tand(Pm_EL)*sind(Pm_EL))/2;

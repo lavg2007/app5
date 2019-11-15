@@ -2,11 +2,13 @@
 specs_app5
 trad_specs
 Profile_Tracking;
-
+%% Analyse du système
 
 figure
 margin(FTBO_AZ)
 
+
+%% Conception de l'avance de phase
 K_AvPh_B = 1/abs(evalfr(FTBO_AZ, j*wg_B))
 
 
@@ -31,10 +33,11 @@ erp_ramp_AZ_B = 1/Kvel
 % figure
 % margin(FTBO_AZ_B1)
 
+%% Conception du Retard de phase
 K_RePh_B = (1/des_erp_B)/Kvel;
 
-% figure
-% margin(K_RePh_B*FTBO_AZ_B1)
+figure
+margin(K_RePh_B*FTBO_AZ_B1)
 
 T_AZ_Re_B = 10/wg_B
 
@@ -49,16 +52,15 @@ Kr_AZ_B = 1;
 G_RePh_B = Kr_AZ_B*(s-z)/(s-p)
 FTBO_AZ_B2 = series(G_RePh_B, FTBO_AZ_B1)
 
-
-
 figure
 margin(FTBO_AZ_B2)
 
-
-
-
 figure
 step(feedback(FTBO_AZ_B2,1), [0:0.001:5])
+
+
+
+%% Coupe Bande
 
 w_c = 54.8 %pic
 w_width = 10
@@ -75,6 +77,9 @@ FTBO_AZ_B3 = series(FTBO_AZ_B2, band_stop)
 Kvel = num(end)/den(end-1);
 erp_ramp_AZ_B = 1/Kvel
 
+
+%% Analyse finale
+
 [Gm_AZ Pm_AZ wgm wpm] = margin(FTBO_AZ_B3);
 zeta = sqrt(tand(Pm_AZ)*sind(Pm_AZ))/2;
 wn = wpm*tand(Pm_AZ)/(2*zeta);
@@ -90,8 +95,6 @@ step(feedback(FTBO_AZ_B3,1), [0:0.001:5])
 
 figure
 rlocus(FTBO_AZ_B3)
-
-%%
 
 t = [0:0.01:30];
 u = t;
