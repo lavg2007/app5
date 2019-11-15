@@ -73,8 +73,11 @@
 %{Analyse du signal
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+L'objectif de ce rapport est de présenter la conception de compensateurs visant à asservir les commandes en azimut et élévation des téléscopes A et B. Une procédure systématique y est présentée, puis chacun des quatre cas est détaillé afin de démontrer le respect des critères du client.
 \section{Procédure de conception systématique}
-%----------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------------------------------------------------%%%%%%%% FIGURE %%%%%%%
+\insertFigure{simple}{diagramme}{0.75}{Procédure de conception}
+%%%%%%%%%%%%%%%%%%%%%%
 \section{Design du télescope A}
 \subsection{Azimut}
 Avant de commencer le desing de compensateur, posons un regard sur le la réponse à l'échellon et sur le lieu de bode de la fonction de transfert qui sera à l'étude dans la prochaine partie.\\
@@ -333,7 +336,7 @@ On débute donc en traduisant les critères en paramètres standards. Dans ce ca
 \[ \zeta =  \frac{1}{2}\sqrt{tan(PM)sin(PM)} = 0.5408\]
 À partir de cette valeur et du critère sur la bande passante, on utilise l'équation suivante pour calculer la fréquence de traverse en gain.
 \[ \omega_g =  \frac{BW\sqrt{\sqrt{1+4\zeta^4}-2\zeta^2}}{\sqrt{1-2\zeta^2+\sqrt{4\zeta^4-4\zeta^2+2}}} = 6.188\]
-On remarque, en se référant à la figure 2, que la marge de phase est trop petite, et que la fréquence de traverse en gain est trop basse. Il faut donc déterminer le gain $K^*$ qu'il faut appliquer à $\omega_g$.
+On remarque, en se référant à la figure 3, que la marge de phase est trop petite, et que la fréquence de traverse en gain est trop basse. Il faut donc déterminer le gain $K^*$ qu'il faut appliquer à $\omega_g$.
 \[K^* = \frac{1}{|G(s)|_{s=j\omega_g}} = 1.528\]
 Le lieu de Bode suivant montre la réponse en fréquence du système avec le gain $K^*$ mais sans compensation. On remarque que le tracé passe par 0 dB à la fréquence $\omega_g$ calculée. De plus, comme le critère de design en marge de phase n'est toujours pas respecté, on doit poursuivre la conception.
 
@@ -341,7 +344,7 @@ Le lieu de Bode suivant montre la réponse en fréquence du système avec le gai
 \insertFigure{simple}{B_AZ_margin_init_K}{0.8}{Lieu de bode de l'azimut avec gain $K^*$}
 %%%%%%%%%%%%%%%%%%%%%%
 
-La figure 23 nous indique l'avance de phase que doit fournir le compensateur, qu'on peut calculer ainsi.
+La figure 24 nous indique l'avance de phase que doit fournir le compensateur, qu'on peut calculer ainsi.
 \[ \Delta \phi = PM^* - \langle K^*G(s)\rangle_{s=j\omega_g^*} -(-180)=60.06\] 
 La phase positive confirme qu'on doit effectivement ajouter un compensateur avance de phase au système. Celui-ci a la forme standard suivante.
  \[ G_a(s)=K_a\frac{s+\frac{1}{T}}{s+\frac{1}{\alpha T}}, \quad \alpha = \frac{1-sin\Delta\phi}{1-sin\Delta\phi}, \quad T = \frac{1}{\omega_g^*\sqrt{\alpha}}\]
@@ -349,7 +352,7 @@ La phase positive confirme qu'on doit effectivement ajouter un compensateur avan
  \[K_a = \frac{K^*}{\sqrt{\alpha}}\]
 On peut maintenant construire la fonction de transfert en boucle ouverte du compensateur avance de phase.
 \[ G_a(s) = 5.714\,\frac{s+1.655}{s+23.14} = \frac{5.71s+9.46}{s+23.1} \]
-On remarque sur la figure 24 que le critère de marge de phase est respecté, à la fréquence de traverse voulue.
+On remarque sur la figure 25 que le critère de marge de phase est respecté, à la fréquence de traverse voulue.
 %%%%%%% FIGURE %%%%%%%
 \insertFigure{simple}{B_AZ_margin_avph}{0.8}{Lieu de bode de l'azimut avec compensateur avance de phase}
 %%%%%%%%%%%%%%%%%%%%%%
@@ -388,7 +391,7 @@ Finalement, on veut atténuer la résonance du système à environ 55 rad/s. Un 
 
 Le tableau \ref{tab:conformite_B_AZ} confirme que le design initial de la compensation du téléscope B en azimut était suffisant pour rencontrer les spécifications du client.
 \subsubsection{Validation de la trajectoire de référence}
-Comme le montre la figure 27, la compensation du système en azimut respecte la trajectoire de référence. On remarque un léger dépassement après la première montée, ce qu'on pouvait s'attendre à voir.
+Comme le montre la figure 28, la compensation du système en azimut respecte la trajectoire de référence. On remarque un léger dépassement après la première montée, ce qu'on pouvait s'attendre à voir.
 %%%%%%% FIGURE %%%%%%%
 \insertFigure{simple}{Verif_trajectoire_B_AZ}{0.7}{Validation de la trajectoire de référence}
 %%%%%%%%%%%%%%%%%%%%%%
@@ -409,7 +412,7 @@ Avec l'ajout du compensateur avance de phase, l'erreur en régime permanent sur 
 \[T = \frac{10}{\omega_g^*} = 1.616 \]
 Encore une fois, on pose un gain $K_r$ de 1.
 \[ G_r(s)=K_r\frac{s+\frac{1}{T}}{s+\frac{1}{\beta T}} = \frac{s + 0.618}{s + 0.0246} \]
-Finalement, on ajoute un coupe bande de type Chebychev au système pour atténuer les oscillation. Comme on remarque sur la figure 13, le pic de résonnance est autour de 123 rad/s. Après l'ajout des deux compensateurs et du filtre, on obtiens la réponse en fréquence suivante.
+Finalement, on ajoute un coupe bande de type Chebychev au système pour atténuer les oscillation. Comme on remarque sur la figure 14, le pic de résonnance est autour de 123 rad/s. Après l'ajout des deux compensateurs et du filtre, on obtiens la réponse en fréquence suivante.
 
 %%%%%%% FIGURE %%%%%%%
 %double figure
@@ -425,7 +428,7 @@ Finalement, on ajoute un coupe bande de type Chebychev au système pour atténue
 %\label{fig:init_final_B_AZ} 
 \end{minipage}
 \\
-On remarque sur la figure 29 que le temps de stabilisation sur la réponse à la rampe unitaire  est d'environs 10.6 secondes. 
+On remarque sur la figure 30 que le temps de stabilisation sur la réponse à la rampe unitaire  est d'environs 10.6 secondes. 
 \subsubsection{Conformité}
 \begin{center}
   \captionof{table}{Conformité de l'élévation du télescope B}
@@ -435,7 +438,7 @@ On remarque sur la figure 29 que le temps de stabilisation sur la réponse à la
 Comme pour le cas du téléscope B en azimut, le design initial a été suffisant pour rencontrer tous les critères du client.
 \subsubsection{Validation de la trajectoire de référence}
 
-
+On vois bien sur la figure suivante que l'atténuation des vibration produit un système beaucoup plus stable, qui n'oscille pas comme avant la compensation. Les mêmes observations qu'aux graphiques précédents s'appliquent à celui-ci.
 
 
 %%%%%%% FIGURE %%%%%%%
@@ -443,7 +446,7 @@ Comme pour le cas du téléscope B en azimut, le design initial a été suffisan
 %%%%%%%%%%%%%%%%%%%%%%
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Conclusion}
-
+Pour conclure, ce rapport présente les différentes procédures pour la conception de compensateur avance et retard de phase, ainsi que leur cas particuliers respectifs. Ces procédures ont été utilisées pour asservir la commande de deux téléscopes, tout en respectant les critères de design imposés par le client.
 
 
 
